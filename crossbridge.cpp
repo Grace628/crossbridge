@@ -27,27 +27,28 @@ int main (int argc, char **argv)
 {
 	int numOfPerson;
 	int totalTime1, totalTime2;
+	int arrayTimeInMinute[1000];
 
 	YAML::Node testfile = YAML::LoadFile("userdata.yaml");
 
-	if (testfile["timeused"])
-	{
-		cout << "found yaml file correct node " << endl;		
-		std::vector<int> arrayTimeInMinute = node["timeused"].as<std::vector<int>>();	
-		numOfPerson = testfile["timeused"].size()
-		
-	}
-	else
-	{
-		cout << "can't found correct node in userdata.yaml" << endl;	
-		return -1;
+
+	
+	cout << "found yaml file correct node " << endl;	
+
+	YAML::Node primes = testfile["timeused"];
+	
+	numOfPerson = primes.size();
+	
+	for (std::size_t i=0;i<primes.size();i++) {
+		//std::cout << primes[i].as<int>() << "\n";
+		arrayTimeInMinute[i] = primes[i].as<int>();
 	}
 	
-
 	cout<<"Total " << numOfPerson << " people need cross bridge " << endl;
 
 	// sort the time from fast to slow
 	sortArray(numOfPerson, arrayTimeInMinute);
+
 
 	if(numOfPerson == 1)
 		totalTime1 = arrayTimeInMinute[0];
@@ -64,7 +65,6 @@ int main (int argc, char **argv)
 			totalTime1 = totalTime2;
 		
 	}
-	
 
 	cout<<"The shortest time for all people cross the bridge is " << totalTime1 << " minutes " << endl;
 	return 0;
@@ -77,6 +77,7 @@ void sortArray(int count, int *arraytime)
    int temp;
 
 	for(int i = 0; i < (count-1); i++)
+	{
 		for( int j = i+1; j < count; j++)
 		{
 			if(arraytime[i] > arraytime[j])
@@ -86,6 +87,7 @@ void sortArray(int count, int *arraytime)
 				arraytime[j] = temp;
 			}
 		}
+	}
 }
 
 
@@ -97,20 +99,22 @@ int method1(int count, int *arraytime)
 {
 	int totaltime = 0;
 	int i;
+
 	if(count%2 == 0) //even number case
 	{
-		for( i = 3; i < count; i+2); 
+		for( i = 3; i < count; i+=2) 
 			totaltime += arraytime[i];
 		totaltime += arraytime[1]*(count-1);
 		totaltime += arraytime[0]*(count/2-1);
 	}
 	else  //odd number case
 	{
-		for( i = 2; i < count; i+2); 
+		for( i = 2; i < count; i+=2) 
 			totaltime += arraytime[i];
 		totaltime += arraytime[1]*(count-2);
 		totaltime += arraytime[0]*(count-1)/2;		
 	}
+	cout<< "method1 got time " << totaltime << " minutes " << endl;
 	return 	totaltime;
 }
 
@@ -122,9 +126,12 @@ int method2(int count, int *arraytime)
 	int totaltime = 0;
 	int i;	
 	
-	for( i = 1; i < count; i++); 
+	for( i = 1; i < count; i++)
 			totaltime += arraytime[i];
-		totaltime += arraytime[0]*(count-2);		
 		
+	totaltime += arraytime[0]*(count-2);	
+	
+	cout<< "method2 got time " << totaltime << " minutes " << endl;
+
 	return 	totaltime;
 }
